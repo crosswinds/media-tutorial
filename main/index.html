@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<link rel="icon" href="data:,">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>crosswinds tutorial</title>
+<style>
+@import url('//fonts.googleapis.com/css2?family=Atkinson+Hyperlegible&display=swap');
+* { margin: 0; border: 0; padding: 0; background-color: #00000000; color: #e0e0e090; user-select: none; }
+html, body { height: 100%; background-color: #202040ff; overflow: hidden; font-size: 20px; font-family: 'Atkinson Hyperlegible' sans-serif; }
+next { position: fixed; top: 2rem; left: 50vw; transform: translate(calc(4.5rem - 50%), -50%); font-size: 3rem; }
+last { position: fixed; top: 2rem; left: 50vw; transform: translate(calc(-4.5rem - 50%), -50%); font-size: 3rem; }
+strip { position: fixed; height: 100vh; transition: left 0.5s ease-in-out; }
+info { position: fixed; top: 2rem; left: 50vw; transform: translate(-50%, -50%); font-size: 2rem; }
+name { position: fixed; top: 4rem; left: 50vw; transform: translate(-50%, -50%); }
+img { width: 100vw; height: 100vh; object-fit: contain; margin-top: auto; }
+</style>
+<script type="module">
+import * as pages from './pages.js'
+let names = Object.keys(pages)
+let index = Number.parseInt(location.hash.slice(1)) - 1
+if (Number.isNaN(index) || index < 0 || index > names.length - 1)
+  index = 0
+let info = document.querySelector('info')
+let name = document.querySelector('name')
+let strip = document.querySelector('strip')
+strip.style.width = `${names.length * 100}vw`
+strip.innerHTML = names.map(name => `<img src="./pages/${pages[name]}">`).join('')
+function update(change) {
+  if (change) index += change
+  if (index >= names.length) index = 0
+  else if (index < 0) index = names.length - 1
+  strip.style.left = `-${index * 100}vw`
+  info.innerText = `${index + 1} ▪ ${names.length}`
+  name.innerText = names[index].slice(3).replace(/_/g, ' ')
+  location.hash = `#${index + 1}`
+}
+document.querySelector('next').addEventListener('click', () => update(1))
+document.querySelector('last').addEventListener('click', () => update(-1))
+update()
+</script>
+</head>
+<body><strip></strip><last>🠴</last><next>🠶</next><info></info><name></name></body>
+</html>
